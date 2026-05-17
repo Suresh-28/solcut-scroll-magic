@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useRef } from "react";
 import { motion, useScroll, useTransform, useSpring, type MotionValue } from "motion/react";
 import logo from "@/assets/solcut-logo.png";
+import sphere from "@/assets/sphere.png";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -102,26 +103,72 @@ function Hero() {
   );
 }
 
-// The logo continues — it's the persistent object that rides the scroll
-function ContinuingLogo() {
+// A realistic sphere that travels and rotates across the entire scroll,
+// floating in front of every section and casting a soft contact shadow.
+function ContinuingSphere() {
   const { scrollYProgress } = useScroll();
-  const smooth = useSpring(scrollYProgress, { stiffness: 80, damping: 30, mass: 0.5 });
+  const smooth = useSpring(scrollYProgress, { stiffness: 60, damping: 25, mass: 0.6 });
 
-  // Logo travels across the page as you scroll
-  const x = useTransform(smooth, [0, 0.25, 0.5, 0.75, 1], ["50%", "-30%", "60%", "-20%", "50%"]);
-  const y = useTransform(smooth, [0, 0.25, 0.5, 0.75, 1], ["50%", "120%", "200%", "320%", "420%"]);
-  const scale = useTransform(smooth, [0, 0.2, 0.5, 0.8, 1], [1, 0.4, 0.6, 0.3, 0.5]);
-  const rotate = useTransform(smooth, [0, 1], [0, 720]);
-  const opacity = useTransform(smooth, [0, 0.05, 0.95, 1], [0, 0.5, 0.5, 0]);
+  // Travel path across the viewport (relative to fixed left/top of the sphere's center)
+  const left = useTransform(
+    smooth,
+    [0, 0.15, 0.32, 0.5, 0.68, 0.85, 1],
+    ["50vw", "85vw", "15vw", "75vw", "20vw", "82vw", "50vw"]
+  );
+  const top = useTransform(
+    smooth,
+    [0, 0.15, 0.32, 0.5, 0.68, 0.85, 1],
+    ["70vh", "40vh", "55vh", "35vh", "60vh", "45vh", "55vh"]
+  );
+  const scale = useTransform(
+    smooth,
+    [0, 0.2, 0.4, 0.6, 0.8, 1],
+    [1, 0.55, 0.85, 0.45, 0.7, 0.6]
+  );
+  const rotate = useTransform(smooth, [0, 1], [0, 540]);
+  const opacity = useTransform(smooth, [0, 0.04, 0.96, 1], [0, 1, 1, 0]);
+
+  // Soft contact shadow tracks the sphere; scales with it
+  const shadowScale = useTransform(scale, (s) => s * 0.9);
+  const shadowOpacity = useTransform(scale, [0.3, 1], [0.18, 0.35]);
 
   return (
-    <motion.img
-      src={logo}
-      alt=""
-      aria-hidden
-      style={{ x: "-50%", y: "-50%", translateX: x, translateY: y, scale, rotate, opacity }}
-      className="pointer-events-none fixed left-0 top-0 z-0 w-[140px] md:w-[200px]"
-    />
+    <>
+      {/* Ground shadow */}
+      <motion.div
+        aria-hidden
+        style={{
+          left,
+          top,
+          opacity: shadowOpacity,
+          scale: shadowScale,
+          translateX: "-50%",
+          translateY: "180px",
+          filter: "blur(28px)",
+        }}
+        className="pointer-events-none fixed z-30 h-12 w-[260px] rounded-[50%] bg-black md:h-16 md:w-[360px]"
+      />
+      {/* The sphere itself */}
+      <motion.img
+        src={sphere}
+        alt=""
+        aria-hidden
+        width={400}
+        height={400}
+        style={{
+          left,
+          top,
+          rotate,
+          scale,
+          opacity,
+          translateX: "-50%",
+          translateY: "-50%",
+          filter: "drop-shadow(0 30px 40px rgba(0,0,0,0.35)) drop-shadow(0 8px 12px rgba(0,0,0,0.2))",
+          willChange: "transform",
+        }}
+        className="pointer-events-none fixed z-40 h-[220px] w-[220px] md:h-[320px] md:w-[320px]"
+      />
+    </>
   );
 }
 
@@ -359,7 +406,7 @@ function Index() {
   return (
     <main className="relative grain bg-background text-foreground">
       <Nav />
-      <ContinuingLogo />
+      <ContinuingSphere />
       <Hero />
       <Marquee />
       <Services />
