@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform, type MotionValue } from "motion/react";
+import { useIsMobile } from "@/hooks/use-mobile";
 import logo from "@/assets/solcut-logo.png";
 import sphere from "@/assets/sphere.png";
 
@@ -14,15 +15,24 @@ function useParallax(value: MotionValue<number>, distance: number) {
 
 type SectionId = "hero" | "services" | "quote" | "work" | "contact";
 
-const SPHERE_POSITIONS: Record<
-  SectionId,
-  { x: string; y: string; scale: number; rotate: number }
-> = {
-  hero:     { x: "78vw", y: "52vh", scale: 1.0,  rotate: 0 },
-  services: { x: "22vw", y: "55vh", scale: 0.75, rotate: 120 },
-  quote:    { x: "82vw", y: "48vh", scale: 0.85, rotate: 240 },
-  work:     { x: "80vw", y: "55vh", scale: 0.6,  rotate: 360 },
-  contact:  { x: "50vw", y: "28vh", scale: 0.7,  rotate: 480 },
+type SpherePose = { x: string; y: string; scale: number; rotate: number };
+
+// Desktop: sphere sits beside content with generous breathing room.
+const SPHERE_POSITIONS_DESKTOP: Record<SectionId, SpherePose> = {
+  hero:     { x: "80vw", y: "52vh", scale: 1.0,  rotate: 0 },
+  services: { x: "20vw", y: "55vh", scale: 0.72, rotate: 120 },
+  quote:    { x: "82vw", y: "50vh", scale: 0.82, rotate: 240 },
+  work:     { x: "82vw", y: "58vh", scale: 0.6,  rotate: 360 },
+  contact:  { x: "50vw", y: "22vh", scale: 0.65, rotate: 480 },
+};
+
+// Mobile: sphere sits high so it never overlaps headlines, body copy, or CTAs.
+const SPHERE_POSITIONS_MOBILE: Record<SectionId, SpherePose> = {
+  hero:     { x: "72vw", y: "14vh", scale: 0.55, rotate: 0 },
+  services: { x: "78vw", y: "12vh", scale: 0.45, rotate: 120 },
+  quote:    { x: "80vw", y: "14vh", scale: 0.5,  rotate: 240 },
+  work:     { x: "78vw", y: "12vh", scale: 0.42, rotate: 360 },
+  contact:  { x: "50vw", y: "14vh", scale: 0.5,  rotate: 480 },
 };
 
 function Nav() {
@@ -47,7 +57,8 @@ function Nav() {
 
 // Sphere that snaps to a designated position per section, gliding between them.
 function ContinuingSphere({ active }: { active: SectionId }) {
-  const pos = SPHERE_POSITIONS[active];
+  const isMobile = useIsMobile();
+  const pos = (isMobile ? SPHERE_POSITIONS_MOBILE : SPHERE_POSITIONS_DESKTOP)[active];
 
   return (
     <>
@@ -105,7 +116,7 @@ function Hero() {
     <section
       id="hero"
       data-section="hero"
-      className="relative flex min-h-screen items-center overflow-hidden"
+      className="relative flex min-h-screen items-center overflow-hidden pt-40 md:pt-0"
     >
       <div className="mx-auto grid w-full max-w-7xl grid-cols-1 px-6 md:grid-cols-12">
         <div className="md:col-span-7">
@@ -189,7 +200,7 @@ function Services() {
     <section
       id="services"
       data-section="services"
-      className="relative py-32 md:py-48"
+      className="relative pt-56 pb-32 md:py-48"
     >
       {/* Push everything to the right so the sphere has the left side */}
       <div className="ml-auto max-w-4xl px-6 md:pr-12 md:pl-0 md:w-[58%]">
@@ -241,7 +252,7 @@ function ParallaxQuote() {
       id="quote"
       data-section="quote"
       ref={ref}
-      className="relative overflow-hidden bg-ink py-40 text-primary-foreground md:py-56"
+      className="relative overflow-hidden bg-ink pt-56 pb-40 text-primary-foreground md:py-56"
     >
       {/* Keep content on the LEFT so sphere reads on the right */}
       <motion.div style={{ y: y1 }} className="max-w-3xl px-6 md:pl-[8%] md:pr-0">
@@ -269,7 +280,7 @@ function Work() {
   ];
 
   return (
-    <section id="work" data-section="work" className="relative py-32 md:py-48">
+    <section id="work" data-section="work" className="relative pt-56 pb-32 md:py-48">
       {/* Content on the LEFT, sphere on the right */}
       <div className="max-w-4xl px-6 md:pl-[8%] md:pr-0 md:w-[62%]">
         <motion.div
@@ -322,7 +333,7 @@ function Contact() {
     <section
       id="contact"
       data-section="contact"
-      className="relative overflow-hidden bg-paper py-32 md:py-48"
+      className="relative overflow-hidden bg-paper pt-56 pb-32 md:py-48"
     >
       {/* Sphere sits high-center; content below */}
       <div className="mx-auto max-w-5xl px-6 pt-40 text-center md:pt-56">
