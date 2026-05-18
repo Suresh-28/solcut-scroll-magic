@@ -335,8 +335,8 @@ function Contact() {
       data-section="contact"
       className="relative overflow-hidden bg-paper pt-56 pb-32 md:py-48"
     >
-      {/* Sphere sits high-center; content below */}
-      <div className="mx-auto max-w-5xl px-6 pt-40 text-center md:pt-56">
+      {/* Sphere on the RIGHT; content sits on the LEFT */}
+      <div className="max-w-3xl px-6 pt-40 md:pt-24 md:pl-[8%] md:pr-0 md:text-left text-center">
         <motion.p
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
