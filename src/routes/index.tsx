@@ -17,22 +17,22 @@ type SectionId = "hero" | "services" | "quote" | "work" | "contact";
 
 type SpherePose = { x: string; y: string; scale: number; rotate: number };
 
-// Desktop: sphere sits beside content with generous breathing room.
+// Desktop: sphere alternates left/right across sections; content sits opposite.
 const SPHERE_POSITIONS_DESKTOP: Record<SectionId, SpherePose> = {
-  hero:     { x: "80vw", y: "52vh", scale: 1.0,  rotate: 0 },
-  services: { x: "20vw", y: "55vh", scale: 0.72, rotate: 120 },
-  quote:    { x: "82vw", y: "50vh", scale: 0.82, rotate: 240 },
-  work:     { x: "82vw", y: "58vh", scale: 0.6,  rotate: 360 },
-  contact:  { x: "50vw", y: "22vh", scale: 0.65, rotate: 480 },
+  hero:     { x: "78vw", y: "52vh", scale: 1.0,  rotate: 0 },   // right
+  services: { x: "22vw", y: "52vh", scale: 0.78, rotate: 120 }, // left
+  quote:    { x: "80vw", y: "50vh", scale: 0.85, rotate: 240 }, // right
+  work:     { x: "20vw", y: "55vh", scale: 0.7,  rotate: 360 }, // left
+  contact:  { x: "78vw", y: "45vh", scale: 0.72, rotate: 480 }, // right
 };
 
-// Mobile: sphere sits high so it never overlaps headlines, body copy, or CTAs.
+// Mobile: sphere always sits high so it never overlaps text or CTAs.
 const SPHERE_POSITIONS_MOBILE: Record<SectionId, SpherePose> = {
-  hero:     { x: "72vw", y: "14vh", scale: 0.55, rotate: 0 },
-  services: { x: "78vw", y: "12vh", scale: 0.45, rotate: 120 },
-  quote:    { x: "80vw", y: "14vh", scale: 0.5,  rotate: 240 },
-  work:     { x: "78vw", y: "12vh", scale: 0.42, rotate: 360 },
-  contact:  { x: "50vw", y: "14vh", scale: 0.5,  rotate: 480 },
+  hero:     { x: "75vw", y: "14vh", scale: 0.55, rotate: 0 },
+  services: { x: "25vw", y: "12vh", scale: 0.48, rotate: 120 },
+  quote:    { x: "78vw", y: "14vh", scale: 0.52, rotate: 240 },
+  work:     { x: "25vw", y: "12vh", scale: 0.46, rotate: 360 },
+  contact:  { x: "75vw", y: "14vh", scale: 0.5,  rotate: 480 },
 };
 
 function Nav() {
