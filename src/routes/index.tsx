@@ -126,7 +126,7 @@ function Hero() {
             transition={{ delay: 0.2, duration: 0.8 }}
             className="mb-8 text-xs uppercase tracking-[0.3em] text-ink-mute"
           >
-            Independent web studio · Est. 2024
+            Independent web studio · Est. 2026
           </motion.p>
           <motion.h1
             initial={{ opacity: 0, y: 40 }}
