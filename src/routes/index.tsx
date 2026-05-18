@@ -126,7 +126,7 @@ function Hero() {
             transition={{ delay: 0.2, duration: 0.8 }}
             className="mb-8 text-xs uppercase tracking-[0.3em] text-ink-mute"
           >
-            Independent web studio · Est. 2024
+            Independent web studio · Est. 2026
           </motion.p>
           <motion.h1
             initial={{ opacity: 0, y: 40 }}
@@ -363,10 +363,10 @@ function Contact() {
           className="mt-12 flex flex-col items-center gap-6 md:items-start"
         >
           <a
-            href="mailto:hello@solcut.studio"
+            href="mailto:connect.shyamala@gmail.com"
             className="font-display text-2xl underline decoration-1 underline-offset-8 transition hover:decoration-2 md:text-4xl"
           >
-            hello@solcut.studio
+            connect.shyamala@gmail.com
           </a>
           <p className="text-sm text-ink-soft">
             Replies within 24h · Booking projects for Q3 2026
@@ -375,8 +375,8 @@ function Contact() {
 
         <div className="mx-auto mt-24 grid max-w-3xl gap-12 border-t border-line pt-16 text-left md:grid-cols-3">
           {[
-            { h: "Scope", l: ["Landing pages", "Brand sites", "Web apps"] },
-            { h: "Engagement", l: ["Fixed-price sprints", "Ongoing retainer", "Audit & consult"] },
+            { h: "Scope", l: ["Landing pages", "Brand sites", "E-commerce"] },
+            { h: "Engagement", l: ["Fixed-price sprints", "Ongoing retainer", "CMS integration"] },
             { h: "Stack", l: ["React + TanStack", "Headless CMS", "Edge hosting"] },
           ].map((col) => (
             <div key={col.h}>
@@ -400,12 +400,12 @@ function Footer() {
       <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-6 text-xs text-ink-mute md:flex-row">
         <div className="flex items-center gap-3">
           <img src={logo} alt="Solcut" className="h-6 w-6 object-contain" />
-          <span>© {new Date().getFullYear()} Solcut Studio. All rights reserved.</span>
+          <span>© 2026 Solcut Studio. All rights reserved.</span>
         </div>
         <div className="flex gap-6 uppercase tracking-[0.2em]">
-          <a href="#" className="hover:text-ink">Twitter</a>
-          <a href="#" className="hover:text-ink">Read.cv</a>
-          <a href="mailto:hello@solcut.studio" className="hover:text-ink">Email</a>
+          <a href="#" className="hover:text-ink">Behance</a>
+          <a href="#" className="hover:text-ink">Instagram</a>
+          <a href="mailto:connect.shyamala@gmail.com" className="hover:text-ink">Email</a>
         </div>
       </div>
     </footer>
