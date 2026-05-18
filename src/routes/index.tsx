@@ -281,8 +281,8 @@ function Work() {
 
   return (
     <section id="work" data-section="work" className="relative pt-56 pb-32 md:py-48">
-      {/* Content on the LEFT, sphere on the right */}
-      <div className="max-w-4xl px-6 md:pl-[8%] md:pr-0 md:w-[62%]">
+      {/* Sphere on the LEFT, content on the RIGHT */}
+      <div className="ml-auto max-w-4xl px-6 md:pr-[8%] md:pl-0 md:w-[62%]">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
