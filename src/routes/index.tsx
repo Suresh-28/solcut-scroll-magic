@@ -116,7 +116,7 @@ function Hero() {
     <section
       id="hero"
       data-section="hero"
-      className="relative flex min-h-screen items-center overflow-hidden"
+      className="relative flex min-h-screen items-center overflow-hidden pt-40 md:pt-0"
     >
       <div className="mx-auto grid w-full max-w-7xl grid-cols-1 px-6 md:grid-cols-12">
         <div className="md:col-span-7">
