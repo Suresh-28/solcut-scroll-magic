@@ -57,7 +57,8 @@ function Nav() {
 
 // Sphere that snaps to a designated position per section, gliding between them.
 function ContinuingSphere({ active }: { active: SectionId }) {
-  const pos = SPHERE_POSITIONS[active];
+  const isMobile = useIsMobile();
+  const pos = (isMobile ? SPHERE_POSITIONS_MOBILE : SPHERE_POSITIONS_DESKTOP)[active];
 
   return (
     <>
