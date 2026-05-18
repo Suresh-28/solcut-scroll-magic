@@ -363,10 +363,10 @@ function Contact() {
           className="mt-12 flex flex-col items-center gap-6 md:items-start"
         >
           <a
-            href="mailto:hello@solcut.studio"
+            href="mailto:connect.shyamala@gmail.com"
             className="font-display text-2xl underline decoration-1 underline-offset-8 transition hover:decoration-2 md:text-4xl"
           >
-            hello@solcut.studio
+            connect.shyamala@gmail.com
           </a>
           <p className="text-sm text-ink-soft">
             Replies within 24h · Booking projects for Q3 2026
