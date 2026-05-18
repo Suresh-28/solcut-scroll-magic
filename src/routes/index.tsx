@@ -360,7 +360,7 @@ function Contact() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.2, duration: 0.8 }}
-          className="mt-12 flex flex-col items-center gap-6"
+          className="mt-12 flex flex-col items-center gap-6 md:items-start"
         >
           <a
             href="mailto:hello@solcut.studio"
