@@ -375,8 +375,8 @@ function Contact() {
 
         <div className="mx-auto mt-24 grid max-w-3xl gap-12 border-t border-line pt-16 text-left md:grid-cols-3">
           {[
-            { h: "Scope", l: ["Landing pages", "Brand sites", "Web apps"] },
-            { h: "Engagement", l: ["Fixed-price sprints", "Ongoing retainer", "Audit & consult"] },
+            { h: "Scope", l: ["Landing pages", "Brand sites", "E-commerce"] },
+            { h: "Engagement", l: ["Fixed-price sprints", "Ongoing retainer", "CMS integration"] },
             { h: "Stack", l: ["React + TanStack", "Headless CMS", "Edge hosting"] },
           ].map((col) => (
             <div key={col.h}>
