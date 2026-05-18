@@ -400,12 +400,12 @@ function Footer() {
       <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-6 text-xs text-ink-mute md:flex-row">
         <div className="flex items-center gap-3">
           <img src={logo} alt="Solcut" className="h-6 w-6 object-contain" />
-          <span>© {new Date().getFullYear()} Solcut Studio. All rights reserved.</span>
+          <span>© 2026 Solcut Studio. All rights reserved.</span>
         </div>
         <div className="flex gap-6 uppercase tracking-[0.2em]">
-          <a href="#" className="hover:text-ink">Twitter</a>
-          <a href="#" className="hover:text-ink">Read.cv</a>
-          <a href="mailto:hello@solcut.studio" className="hover:text-ink">Email</a>
+          <a href="#" className="hover:text-ink">Behance</a>
+          <a href="#" className="hover:text-ink">Instagram</a>
+          <a href="mailto:connect.shyamala@gmail.com" className="hover:text-ink">Email</a>
         </div>
       </div>
     </footer>
