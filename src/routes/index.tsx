@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform, type MotionValue } from "motion/react";
+import { useIsMobile } from "@/hooks/use-mobile";
 import logo from "@/assets/solcut-logo.png";
 import sphere from "@/assets/sphere.png";
 
@@ -14,15 +15,24 @@ function useParallax(value: MotionValue<number>, distance: number) {
 
 type SectionId = "hero" | "services" | "quote" | "work" | "contact";
 
-const SPHERE_POSITIONS: Record<
-  SectionId,
-  { x: string; y: string; scale: number; rotate: number }
-> = {
-  hero:     { x: "78vw", y: "52vh", scale: 1.0,  rotate: 0 },
-  services: { x: "22vw", y: "55vh", scale: 0.75, rotate: 120 },
-  quote:    { x: "82vw", y: "48vh", scale: 0.85, rotate: 240 },
-  work:     { x: "80vw", y: "55vh", scale: 0.6,  rotate: 360 },
-  contact:  { x: "50vw", y: "28vh", scale: 0.7,  rotate: 480 },
+type SpherePose = { x: string; y: string; scale: number; rotate: number };
+
+// Desktop: sphere sits beside content with generous breathing room.
+const SPHERE_POSITIONS_DESKTOP: Record<SectionId, SpherePose> = {
+  hero:     { x: "80vw", y: "52vh", scale: 1.0,  rotate: 0 },
+  services: { x: "20vw", y: "55vh", scale: 0.72, rotate: 120 },
+  quote:    { x: "82vw", y: "50vh", scale: 0.82, rotate: 240 },
+  work:     { x: "82vw", y: "58vh", scale: 0.6,  rotate: 360 },
+  contact:  { x: "50vw", y: "22vh", scale: 0.65, rotate: 480 },
+};
+
+// Mobile: sphere sits high so it never overlaps headlines, body copy, or CTAs.
+const SPHERE_POSITIONS_MOBILE: Record<SectionId, SpherePose> = {
+  hero:     { x: "72vw", y: "14vh", scale: 0.55, rotate: 0 },
+  services: { x: "78vw", y: "12vh", scale: 0.45, rotate: 120 },
+  quote:    { x: "80vw", y: "14vh", scale: 0.5,  rotate: 240 },
+  work:     { x: "78vw", y: "12vh", scale: 0.42, rotate: 360 },
+  contact:  { x: "50vw", y: "14vh", scale: 0.5,  rotate: 480 },
 };
 
 function Nav() {
