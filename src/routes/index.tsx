@@ -200,7 +200,7 @@ function Services() {
     <section
       id="services"
       data-section="services"
-      className="relative py-32 md:py-48"
+      className="relative pt-56 pb-32 md:py-48"
     >
       {/* Push everything to the right so the sphere has the left side */}
       <div className="ml-auto max-w-4xl px-6 md:pr-12 md:pl-0 md:w-[58%]">
@@ -252,7 +252,7 @@ function ParallaxQuote() {
       id="quote"
       data-section="quote"
       ref={ref}
-      className="relative overflow-hidden bg-ink py-40 text-primary-foreground md:py-56"
+      className="relative overflow-hidden bg-ink pt-56 pb-40 text-primary-foreground md:py-56"
     >
       {/* Keep content on the LEFT so sphere reads on the right */}
       <motion.div style={{ y: y1 }} className="max-w-3xl px-6 md:pl-[8%] md:pr-0">
@@ -280,7 +280,7 @@ function Work() {
   ];
 
   return (
-    <section id="work" data-section="work" className="relative py-32 md:py-48">
+    <section id="work" data-section="work" className="relative pt-56 pb-32 md:py-48">
       {/* Content on the LEFT, sphere on the right */}
       <div className="max-w-4xl px-6 md:pl-[8%] md:pr-0 md:w-[62%]">
         <motion.div
@@ -333,7 +333,7 @@ function Contact() {
     <section
       id="contact"
       data-section="contact"
-      className="relative overflow-hidden bg-paper py-32 md:py-48"
+      className="relative overflow-hidden bg-paper pt-56 pb-32 md:py-48"
     >
       {/* Sphere sits high-center; content below */}
       <div className="mx-auto max-w-5xl px-6 pt-40 text-center md:pt-56">
