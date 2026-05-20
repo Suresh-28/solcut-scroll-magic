@@ -403,8 +403,8 @@ function Footer() {
           <span>© 2026 Solcut Studio. All rights reserved.</span>
         </div>
         <div className="flex gap-6 uppercase tracking-[0.2em]">
-          <a href="#" className="hover:text-ink">Behance</a>
-          <a href="#" className="hover:text-ink">Instagram</a>
+          <a href="https://www.behance.net/solcut" target="_blank" rel="noopener noreferrer" className="hover:text-ink">Behance</a>
+          <a href="https://instagram.com/solcut_x" target="_blank" rel="noopener noreferrer" className="hover:text-ink">Instagram</a>
           <a href="mailto:connect.shyamala@gmail.com" className="hover:text-ink">Email</a>
         </div>
       </div>
