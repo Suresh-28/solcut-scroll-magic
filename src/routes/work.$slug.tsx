@@ -82,7 +82,7 @@ function CaseStudyPage() {
           <div>
             <p className="mb-4 text-xs uppercase tracking-[0.3em] text-ink-mute">Approach</p>
             <ul className="space-y-4 text-ink-soft">
-              {study.approach.map((a, i) => (
+              {study.approach.map((a: string, i: number) => (
                 <li key={i} className="flex gap-4">
                   <span className="font-display text-sm text-ink-mute">0{i + 1}</span>
                   <span>{a}</span>
@@ -97,7 +97,7 @@ function CaseStudyPage() {
         <div className="mx-auto max-w-5xl px-6">
           <p className="mb-4 text-xs uppercase tracking-[0.3em] text-ink-mute">Results</p>
           <div className="mt-6 grid gap-px bg-line md:grid-cols-3">
-            {study.results.map((r) => (
+            {study.results.map((r: { label: string; value: string }) => (
               <div key={r.label} className="bg-paper p-10">
                 <div className="font-display text-5xl font-light md:text-6xl">{r.value}</div>
                 <p className="mt-4 text-sm uppercase tracking-[0.2em] text-ink-mute">{r.label}</p>
