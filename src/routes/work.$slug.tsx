@@ -2,11 +2,12 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
-import { caseStudies } from "@/content/case-studies";
+import { getWorkSync, useWork } from "@/lib/contentStore";
 
 export const Route = createFileRoute("/work/$slug")({
   loader: ({ params }) => {
-    const study = caseStudies.find((c) => c.slug === params.slug);
+    const list = getWorkSync();
+    const study = list.find((c) => c.slug === params.slug);
     if (!study) throw notFound();
     return { study };
   },
@@ -39,8 +40,10 @@ export const Route = createFileRoute("/work/$slug")({
 });
 
 function CaseStudyPage() {
-  const { study } = Route.useLoaderData();
-  const next = caseStudies[(caseStudies.findIndex((c) => c.slug === study.slug) + 1) % caseStudies.length];
+  const { study: initial } = Route.useLoaderData();
+  const [list] = useWork();
+  const study = list.find((c) => c.slug === initial.slug) ?? initial;
+  const next = list[(list.findIndex((c) => c.slug === study.slug) + 1) % list.length] ?? study;
 
   return (
     <main className="relative grain bg-background text-foreground">
