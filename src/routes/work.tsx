@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
-import { caseStudies } from "@/content/case-studies";
+import { useWork } from "@/lib/contentStore";
 
 export const Route = createFileRoute("/work")({
   head: () => ({
@@ -17,6 +17,7 @@ export const Route = createFileRoute("/work")({
 });
 
 function WorkPage() {
+  const [caseStudies] = useWork();
   return (
     <main className="relative grain bg-background text-foreground">
       <Nav />
