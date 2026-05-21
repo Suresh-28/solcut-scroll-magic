@@ -3,6 +3,7 @@ import { motion } from "motion/react";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { Testimonials } from "@/components/Testimonials";
+import { useAbout } from "@/lib/contentStore";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -15,13 +16,6 @@ export const Route = createFileRoute("/about")({
   }),
   component: AboutPage,
 });
-
-const principles = [
-  { n: "01", t: "Ship in two weeks", d: "Fixed timelines force sharper decisions. We commit to a date and meet it." },
-  { n: "02", t: "Performance is design", d: "A slow site is a bad site. 95+ Lighthouse is the floor, not the ceiling." },
-  { n: "03", t: "No template tells", d: "Every layout, type pairing, and interaction is custom. You'll never see your site twice." },
-  { n: "04", t: "Edit without us", d: "Headless CMS by default. Your team owns the words after we leave." },
-];
 
 function AboutPage() {
   return (
