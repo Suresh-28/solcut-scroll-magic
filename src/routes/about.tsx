@@ -34,7 +34,7 @@ function AboutPage() {
             transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
             className="font-display text-[clamp(2.5rem,7vw,6rem)] font-light leading-[0.98]"
           >
-            A small studio for<br /><em className="italic text-ink-soft">brands that mean it</em>.
+            {about.headline}<br /><em className="italic text-ink-soft">{about.headlineEm}</em>.
           </motion.h1>
           <motion.p
             initial={{ opacity: 0 }}
@@ -42,9 +42,7 @@ function AboutPage() {
             transition={{ delay: 0.4, duration: 0.8 }}
             className="mt-10 max-w-2xl text-lg leading-relaxed text-ink-soft"
           >
-            Solcut was founded in 2026 by a designer and an engineer who were tired of
-            agency timelines and template-shaped websites. We work directly with founders
-            and small teams, take the brief seriously, and ship fast.
+            {about.intro}
           </motion.p>
         </div>
       </section>
@@ -72,15 +70,12 @@ function AboutPage() {
           <div className="grid gap-12 md:grid-cols-3">
             <div>
               <p className="mb-4 text-xs uppercase tracking-[0.3em] text-ink-mute">Founder</p>
-              <h3 className="font-display text-2xl font-light">Shyamala</h3>
-              <p className="mt-1 text-sm text-ink-soft">Design & strategy</p>
+              <h3 className="font-display text-2xl font-light">{about.founderName}</h3>
+              <p className="mt-1 text-sm text-ink-soft">{about.founderRole}</p>
             </div>
             <div className="md:col-span-2">
               <p className="text-lg leading-relaxed text-ink-soft">
-                Shyamala leads design and client strategy at Solcut. Previously shipped
-                product and brand work for studios and venture-backed startups across
-                India, the UK, and the US. Believes the best websites read like the
-                people who built them.
+                {about.founderBio}
               </p>
               <div className="mt-6 flex gap-6 text-sm">
                 <a href="https://www.behance.net/solcut" target="_blank" rel="noopener noreferrer" className="underline-offset-4 hover:underline">Behance ↗</a>
