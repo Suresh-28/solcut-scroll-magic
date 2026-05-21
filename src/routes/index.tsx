@@ -21,11 +21,11 @@ type SectionId = "hero" | "services" | "quote" | "work" | "contact";
 type SpherePose = { x: string; y: string; scale: number; rotate: number };
 
 const SPHERE_POSITIONS_DESKTOP: Record<SectionId, SpherePose> = {
-  hero:     { x: "78vw", y: "52vh", scale: 1.0,  rotate: 0 },
-  services: { x: "22vw", y: "52vh", scale: 0.78, rotate: 120 },
-  quote:    { x: "80vw", y: "50vh", scale: 0.85, rotate: 240 },
-  work:     { x: "20vw", y: "55vh", scale: 0.7,  rotate: 360 },
-  contact:  { x: "78vw", y: "45vh", scale: 0.72, rotate: 480 },
+  hero:     { x: "85vw", y: "52vh", scale: 1.0,  rotate: 0 },
+  services: { x: "15vw", y: "50vh", scale: 0.78, rotate: 120 },
+  quote:    { x: "88vw", y: "48vh", scale: 0.88, rotate: 240 },
+  work:     { x: "12vw", y: "55vh", scale: 0.7,  rotate: 360 },
+  contact:  { x: "86vw", y: "45vh", scale: 0.74, rotate: 480 },
 };
 
 const SPHERE_POSITIONS_MOBILE: Record<SectionId, SpherePose> = {
