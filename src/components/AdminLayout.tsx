@@ -3,13 +3,14 @@ import { useEffect, useState } from "react";
 import { Menu, X, LogOut, LayoutDashboard, MessageSquareQuote, Briefcase, Tag, User } from "lucide-react";
 import { useAdminAuth, logout } from "@/lib/adminAuth";
 
-const items = [
+type NavItem = { to: "/admin" | "/admin/testimonials" | "/admin/work" | "/admin/pricing" | "/admin/about"; label: string; icon: typeof LayoutDashboard; exact?: boolean };
+const items: NavItem[] = [
   { to: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { to: "/admin/testimonials", label: "Testimonials", icon: MessageSquareQuote },
   { to: "/admin/work", label: "Selected Work", icon: Briefcase },
   { to: "/admin/pricing", label: "Pricing", icon: Tag },
   { to: "/admin/about", label: "About", icon: User },
-] as const;
+];
 
 export function AdminLayout({ children, title }: { children: React.ReactNode; title: string }) {
   const { authed, ready } = useAdminAuth();
