@@ -165,7 +165,14 @@ function ParallaxQuote() {
   const y1 = useParallax(scrollYProgress, -120);
   return (
     <section id="quote" data-section="quote" ref={ref} className="relative overflow-hidden bg-ink pt-56 pb-40 text-primary-foreground md:py-56">
-      <motion.div style={{ y: y1 }} className="max-w-3xl px-6 md:pl-[8%] md:pr-0">
+      <motion.div
+        style={{ y: y1 }}
+        initial={{ opacity: 0, x: -80 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+        className="max-w-3xl px-6 md:pl-[8%] md:pr-0"
+      >
         <p className="font-display text-3xl font-light leading-[1.15] md:text-5xl">
           A website is the only employee that works while you sleep —
           <em className="italic text-white/60"> ours show up rested.</em>
