@@ -1,7 +1,10 @@
 import { motion } from "motion/react";
-import { testimonials, clientLogos } from "@/content/testimonials";
+import { useTestimonials, useClientLogos } from "@/lib/contentStore";
 
 export function Testimonials({ heading = "What clients say" }: { heading?: string }) {
+  const [testimonials] = useTestimonials();
+  const [clientLogos] = useClientLogos();
+
   return (
     <section className="relative border-t border-line bg-background py-32 md:py-40">
       <div className="mx-auto max-w-7xl px-6">
@@ -13,7 +16,7 @@ export function Testimonials({ heading = "What clients say" }: { heading?: strin
         <div className="mt-16 grid gap-px bg-line md:grid-cols-3">
           {testimonials.map((t, i) => (
             <motion.figure
-              key={t.author}
+              key={`${t.author}-${i}`}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}

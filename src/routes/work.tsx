@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
-import { caseStudies } from "@/content/case-studies";
+import { useWork } from "@/lib/contentStore";
 
 export const Route = createFileRoute("/work")({
   head: () => ({
@@ -17,6 +17,7 @@ export const Route = createFileRoute("/work")({
 });
 
 function WorkPage() {
+  const [caseStudies] = useWork();
   return (
     <main className="relative grain bg-background text-foreground">
       <Nav />
@@ -55,9 +56,20 @@ function WorkPage() {
                     {c.name}
                   </h2>
                   <p className="mt-3 text-ink-soft">{c.outcome}</p>
-                  <span className="mt-6 inline-flex items-center gap-2 text-sm transition group-hover:gap-4">
-                    Read case study →
-                  </span>
+                  <div className="mt-6 flex items-center gap-6 text-sm">
+                    <span className="inline-flex items-center gap-2 transition group-hover:gap-4">Read case study →</span>
+                    {c.link && (
+                      <a
+                        href={c.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        className="text-ink-mute underline-offset-4 hover:text-ink hover:underline"
+                      >
+                        Visit site ↗
+                      </a>
+                    )}
+                  </div>
                 </Link>
               </motion.div>
             ))}

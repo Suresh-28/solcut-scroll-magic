@@ -2,11 +2,12 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
-import { caseStudies } from "@/content/case-studies";
+import { getWorkSync, useWork } from "@/lib/contentStore";
 
 export const Route = createFileRoute("/work/$slug")({
   loader: ({ params }) => {
-    const study = caseStudies.find((c) => c.slug === params.slug);
+    const list = getWorkSync();
+    const study = list.find((c) => c.slug === params.slug);
     if (!study) throw notFound();
     return { study };
   },
@@ -39,8 +40,10 @@ export const Route = createFileRoute("/work/$slug")({
 });
 
 function CaseStudyPage() {
-  const { study } = Route.useLoaderData();
-  const next = caseStudies[(caseStudies.findIndex((c) => c.slug === study.slug) + 1) % caseStudies.length];
+  const { study: initial } = Route.useLoaderData();
+  const [list] = useWork();
+  const study = list.find((c) => c.slug === initial.slug) ?? initial;
+  const next = list[(list.findIndex((c) => c.slug === study.slug) + 1) % list.length] ?? study;
 
   return (
     <main className="relative grain bg-background text-foreground">
@@ -60,6 +63,16 @@ function CaseStudyPage() {
             {study.name}
           </motion.h1>
           <p className="mt-8 max-w-2xl text-lg text-ink-soft">{study.summary}</p>
+          {study.link && (
+            <a
+              href={study.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-6 inline-flex items-center gap-2 rounded-full border border-line px-5 py-2 text-sm hover:bg-paper"
+            >
+              Visit live site ↗
+            </a>
+          )}
         </div>
       </section>
 

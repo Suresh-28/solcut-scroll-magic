@@ -8,6 +8,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { usePricing } from "@/lib/contentStore";
 
 export const Route = createFileRoute("/pricing")({
   head: () => ({
@@ -31,43 +32,8 @@ export const Route = createFileRoute("/pricing")({
   component: PricingPage,
 });
 
-const tiers = [
-  {
-    name: "Landing",
-    price: "from $2,400",
-    timeline: "1 week",
-    ideal: "Founders launching a single high-stakes page.",
-    features: ["One-page landing", "Custom design system", "Copy polish", "Lighthouse 95+", "Form + analytics"],
-    highlighted: false,
-  },
-  {
-    name: "Brand site",
-    price: "from $6,800",
-    timeline: "2 weeks",
-    ideal: "Studios & teams shipping a full marketing site.",
-    features: ["Up to 6 pages", "Headless CMS", "Custom animation", "SEO baseline", "Two rounds of revisions", "30-day post-launch support"],
-    highlighted: true,
-  },
-  {
-    name: "Custom build",
-    price: "let's talk",
-    timeline: "4–8 weeks",
-    ideal: "E-commerce, dashboards, or multi-locale platforms.",
-    features: ["Discovery workshop", "Headless commerce / CMS", "Bespoke integrations", "Performance budget", "Ongoing retainer optional"],
-    highlighted: false,
-  },
-];
-
-const faqs = [
-  { q: "How do payments work?", a: "50% to start, 50% on launch. Custom builds are billed in milestones." },
-  { q: "How many revisions are included?", a: "Two structural rounds per phase. After that we tune in public — small iterations after launch are part of the engagement." },
-  { q: "Who owns the work?", a: "You do. All code, design files, and content rights transfer on final payment." },
-  { q: "Can we edit the site ourselves?", a: "Yes. We default to headless CMS so your team can publish without touching code." },
-  { q: "Do you offer ongoing support?", a: "Yes — monthly retainers for iteration, content, and performance work, or hourly as needed." },
-  { q: "What if it doesn't ship on time?", a: "We've never missed a date. If we do, you're not charged for the overrun." },
-];
-
 function PricingPage() {
+  const [{ tiers, faqs }] = usePricing();
   return (
     <main className="relative grain bg-background text-foreground">
       <Nav />
