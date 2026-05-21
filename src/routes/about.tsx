@@ -18,6 +18,8 @@ export const Route = createFileRoute("/about")({
 });
 
 function AboutPage() {
+  const [about] = useAbout();
+  const principles = about.principles;
   return (
     <main className="relative grain bg-background text-foreground">
       <Nav />
