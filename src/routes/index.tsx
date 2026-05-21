@@ -233,17 +233,17 @@ function WorkPreview() {
 function ContactCTA() {
   return (
     <section id="contact" data-section="contact" className="relative overflow-hidden bg-paper pt-56 pb-32 md:py-48">
-      <div className="max-w-3xl px-6 pt-40 md:pt-24 md:pl-[8%] md:pr-0 md:text-left text-center">
+      <motion.div
+        initial={{ opacity: 0, x: -80 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+        className="max-w-3xl px-6 pt-40 md:pt-24 md:pl-[8%] md:pr-0 md:text-left text-center"
+      >
         <p className="mb-6 text-xs uppercase tracking-[0.3em] text-ink-mute">Contact</p>
-        <motion.h2
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-          className="font-display text-[clamp(2.25rem,7vw,6rem)] font-light leading-[1]"
-        >
+        <h2 className="font-display text-[clamp(2.25rem,7vw,6rem)] font-light leading-[1]">
           Let's build something<br /><em className="italic text-ink-soft">worth visiting</em>.
-        </motion.h2>
+        </h2>
         <div className="mt-12 flex flex-col items-center gap-6 md:items-start">
           <Link to="/contact" className="inline-flex items-center gap-3 rounded-full bg-ink px-7 py-4 text-base text-primary-foreground transition hover:gap-5">
             Start a project →
@@ -253,7 +253,7 @@ function ContactCTA() {
           </a>
           <p className="text-sm text-ink-soft">Replies within 24h · Booking projects for Q3 2026</p>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }
