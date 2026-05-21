@@ -189,14 +189,20 @@ function ParallaxQuote() {
 function WorkPreview() {
   const featured = caseStudies.slice(0, 3);
   return (
-    <section id="work" data-section="work" className="relative pt-56 pb-32 md:py-48">
-      <div className="ml-auto max-w-4xl px-6 md:pr-[8%] md:pl-0 md:w-[62%]">
-        <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="mb-16">
+    <section id="work" data-section="work" className="relative overflow-hidden pt-56 pb-32 md:py-48">
+      <motion.div
+        initial={{ opacity: 0, x: 80 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+        className="ml-auto max-w-4xl px-6 md:pr-[8%] md:pl-0 md:w-[62%]"
+      >
+        <div className="mb-16">
           <p className="mb-4 text-xs uppercase tracking-[0.3em] text-ink-mute">Selected work</p>
           <h2 className="font-display text-5xl font-light leading-[1] md:text-7xl">
             Brands we've<br /><em className="italic text-ink-soft">put online</em>.
           </h2>
-        </motion.div>
+        </div>
         <div className="border-t border-line">
           {featured.map((p, i) => (
             <motion.div key={p.slug} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.6, delay: i * 0.05 }}>
@@ -219,7 +225,7 @@ function WorkPreview() {
             See all work →
           </Link>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }
