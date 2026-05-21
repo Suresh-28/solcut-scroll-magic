@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { motion } from "motion/react";
 import { z } from "zod";
+import { toast } from "sonner";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { Input } from "@/components/ui/input";
@@ -14,6 +15,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
+const RECIPIENT = "connect.shyamala@gmail.com";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
