@@ -21,11 +21,11 @@ type SectionId = "hero" | "services" | "quote" | "work" | "contact";
 type SpherePose = { x: string; y: string; scale: number; rotate: number };
 
 const SPHERE_POSITIONS_DESKTOP: Record<SectionId, SpherePose> = {
-  hero:     { x: "78vw", y: "52vh", scale: 1.0,  rotate: 0 },
-  services: { x: "22vw", y: "52vh", scale: 0.78, rotate: 120 },
-  quote:    { x: "80vw", y: "50vh", scale: 0.85, rotate: 240 },
-  work:     { x: "20vw", y: "55vh", scale: 0.7,  rotate: 360 },
-  contact:  { x: "78vw", y: "45vh", scale: 0.72, rotate: 480 },
+  hero:     { x: "85vw", y: "52vh", scale: 1.0,  rotate: 0 },
+  services: { x: "15vw", y: "50vh", scale: 0.78, rotate: 120 },
+  quote:    { x: "88vw", y: "48vh", scale: 0.88, rotate: 240 },
+  work:     { x: "12vw", y: "55vh", scale: 0.7,  rotate: 360 },
+  contact:  { x: "86vw", y: "45vh", scale: 0.74, rotate: 480 },
 };
 
 const SPHERE_POSITIONS_MOBILE: Record<SectionId, SpherePose> = {
@@ -127,9 +127,15 @@ function Services() {
     { n: "04", t: "Iterate", d: "We ship in two weeks then watch the data. Headlines, sections, and flows tuned in public." },
   ];
   return (
-    <section id="services" data-section="services" className="relative pt-56 pb-32 md:py-48">
-      <div className="ml-auto max-w-4xl px-6 md:pr-12 md:pl-0 md:w-[58%]">
-        <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.8 }} className="mb-16">
+    <section id="services" data-section="services" className="relative overflow-hidden pt-56 pb-32 md:py-48">
+      <motion.div
+        initial={{ opacity: 0, x: 80 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+        className="ml-auto max-w-4xl px-6 md:pr-12 md:pl-0 md:w-[58%]"
+      >
+        <div className="mb-16">
           <p className="mb-4 text-xs uppercase tracking-[0.3em] text-ink-mute">Process</p>
           <h2 className="font-display text-5xl font-light leading-[1] md:text-7xl">
             Four steps,<br /><em className="italic text-ink-soft">two weeks</em>.
@@ -138,7 +144,7 @@ function Services() {
             Most agencies disappear for two months. We commit to a fixed timeline and ship
             something you can put in front of a customer by Friday week two.
           </p>
-        </motion.div>
+        </div>
         <div className="grid gap-px bg-line md:grid-cols-2">
           {services.map((s, i) => (
             <motion.div key={s.n} initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.7, delay: i * 0.08 }} className="group relative overflow-hidden bg-background p-8 transition hover:bg-paper md:p-10">
@@ -148,7 +154,7 @@ function Services() {
             </motion.div>
           ))}
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }
@@ -159,7 +165,14 @@ function ParallaxQuote() {
   const y1 = useParallax(scrollYProgress, -120);
   return (
     <section id="quote" data-section="quote" ref={ref} className="relative overflow-hidden bg-ink pt-56 pb-40 text-primary-foreground md:py-56">
-      <motion.div style={{ y: y1 }} className="max-w-3xl px-6 md:pl-[8%] md:pr-0">
+      <motion.div
+        style={{ y: y1 }}
+        initial={{ opacity: 0, x: -80 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+        className="max-w-3xl px-6 md:pl-[8%] md:pr-0"
+      >
         <p className="font-display text-3xl font-light leading-[1.15] md:text-5xl">
           A website is the only employee that works while you sleep —
           <em className="italic text-white/60"> ours show up rested.</em>
@@ -176,14 +189,20 @@ function ParallaxQuote() {
 function WorkPreview() {
   const featured = caseStudies.slice(0, 3);
   return (
-    <section id="work" data-section="work" className="relative pt-56 pb-32 md:py-48">
-      <div className="ml-auto max-w-4xl px-6 md:pr-[8%] md:pl-0 md:w-[62%]">
-        <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="mb-16">
+    <section id="work" data-section="work" className="relative overflow-hidden pt-56 pb-32 md:py-48">
+      <motion.div
+        initial={{ opacity: 0, x: 80 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+        className="ml-auto max-w-4xl px-6 md:pr-[8%] md:pl-0 md:w-[62%]"
+      >
+        <div className="mb-16">
           <p className="mb-4 text-xs uppercase tracking-[0.3em] text-ink-mute">Selected work</p>
           <h2 className="font-display text-5xl font-light leading-[1] md:text-7xl">
             Brands we've<br /><em className="italic text-ink-soft">put online</em>.
           </h2>
-        </motion.div>
+        </div>
         <div className="border-t border-line">
           {featured.map((p, i) => (
             <motion.div key={p.slug} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.6, delay: i * 0.05 }}>
@@ -206,7 +225,7 @@ function WorkPreview() {
             See all work →
           </Link>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }
@@ -214,17 +233,17 @@ function WorkPreview() {
 function ContactCTA() {
   return (
     <section id="contact" data-section="contact" className="relative overflow-hidden bg-paper pt-56 pb-32 md:py-48">
-      <div className="max-w-3xl px-6 pt-40 md:pt-24 md:pl-[8%] md:pr-0 md:text-left text-center">
+      <motion.div
+        initial={{ opacity: 0, x: -80 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+        className="max-w-3xl px-6 pt-40 md:pt-24 md:pl-[8%] md:pr-0 md:text-left text-center"
+      >
         <p className="mb-6 text-xs uppercase tracking-[0.3em] text-ink-mute">Contact</p>
-        <motion.h2
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-          className="font-display text-[clamp(2.25rem,7vw,6rem)] font-light leading-[1]"
-        >
+        <h2 className="font-display text-[clamp(2.25rem,7vw,6rem)] font-light leading-[1]">
           Let's build something<br /><em className="italic text-ink-soft">worth visiting</em>.
-        </motion.h2>
+        </h2>
         <div className="mt-12 flex flex-col items-center gap-6 md:items-start">
           <Link to="/contact" className="inline-flex items-center gap-3 rounded-full bg-ink px-7 py-4 text-base text-primary-foreground transition hover:gap-5">
             Start a project →
@@ -234,7 +253,7 @@ function ContactCTA() {
           </a>
           <p className="text-sm text-ink-soft">Replies within 24h · Booking projects for Q3 2026</p>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }
