@@ -56,9 +56,18 @@ function ContactPage() {
       return;
     }
     setSubmitting(true);
-    // Compose a mailto with the structured brief while backend isn't wired.
-    const body = `Name: ${parsed.data.name}\nEmail: ${parsed.data.email}\nCompany: ${parsed.data.company ?? "-"}\nBudget: ${parsed.data.budget}\nTimeline: ${parsed.data.timeline}\n\n${parsed.data.brief}`;
-    window.location.href = `mailto:connect.shyamala@gmail.com?subject=${encodeURIComponent(`New project — ${parsed.data.name}`)}&body=${encodeURIComponent(body)}`;
+    const subject = `New project brief — ${parsed.data.name}`;
+    const body =
+      `Name: ${parsed.data.name}\n` +
+      `Email: ${parsed.data.email}\n` +
+      `Company: ${parsed.data.company || "-"}\n` +
+      `Budget: ${parsed.data.budget}\n` +
+      `Timeline: ${parsed.data.timeline}\n\n` +
+      `Brief:\n${parsed.data.brief}`;
+    // Opens the visitor's default mail client pre-filled with the brief.
+    // Without a backend this is the only built-in way to actually deliver.
+    window.location.href = `mailto:${RECIPIENT}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    toast.success("Opening your email client to send the brief…");
     setTimeout(() => setSubmitting(false), 1200);
   };
 
