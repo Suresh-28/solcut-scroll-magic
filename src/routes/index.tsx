@@ -127,9 +127,15 @@ function Services() {
     { n: "04", t: "Iterate", d: "We ship in two weeks then watch the data. Headlines, sections, and flows tuned in public." },
   ];
   return (
-    <section id="services" data-section="services" className="relative pt-56 pb-32 md:py-48">
-      <div className="ml-auto max-w-4xl px-6 md:pr-12 md:pl-0 md:w-[58%]">
-        <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.8 }} className="mb-16">
+    <section id="services" data-section="services" className="relative overflow-hidden pt-56 pb-32 md:py-48">
+      <motion.div
+        initial={{ opacity: 0, x: 80 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+        className="ml-auto max-w-4xl px-6 md:pr-12 md:pl-0 md:w-[58%]"
+      >
+        <div className="mb-16">
           <p className="mb-4 text-xs uppercase tracking-[0.3em] text-ink-mute">Process</p>
           <h2 className="font-display text-5xl font-light leading-[1] md:text-7xl">
             Four steps,<br /><em className="italic text-ink-soft">two weeks</em>.
@@ -138,7 +144,7 @@ function Services() {
             Most agencies disappear for two months. We commit to a fixed timeline and ship
             something you can put in front of a customer by Friday week two.
           </p>
-        </motion.div>
+        </div>
         <div className="grid gap-px bg-line md:grid-cols-2">
           {services.map((s, i) => (
             <motion.div key={s.n} initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.7, delay: i * 0.08 }} className="group relative overflow-hidden bg-background p-8 transition hover:bg-paper md:p-10">
@@ -148,7 +154,7 @@ function Services() {
             </motion.div>
           ))}
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }
