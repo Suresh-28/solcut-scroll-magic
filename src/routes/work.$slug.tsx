@@ -63,6 +63,16 @@ function CaseStudyPage() {
             {study.name}
           </motion.h1>
           <p className="mt-8 max-w-2xl text-lg text-ink-soft">{study.summary}</p>
+          {study.link && (
+            <a
+              href={study.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-6 inline-flex items-center gap-2 rounded-full border border-line px-5 py-2 text-sm hover:bg-paper"
+            >
+              Visit live site ↗
+            </a>
+          )}
         </div>
       </section>
 
