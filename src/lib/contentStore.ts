@@ -1,6 +1,12 @@
-import { useEffect, useState, useCallback } from "react";
+import { useCallback } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { caseStudies as defaultCaseStudies, type CaseStudy } from "@/content/case-studies";
-import { testimonials as defaultTestimonials, clientLogos as defaultLogos, type Testimonial } from "@/content/testimonials";
+import {
+  testimonials as defaultTestimonials,
+  clientLogos as defaultLogos,
+  type Testimonial,
+} from "@/content/testimonials";
 
 export type WorkItem = CaseStudy & { link?: string; category?: string };
 
@@ -57,61 +63,84 @@ const defaultAbout: AboutData = {
   founderBio: "Shyamala leads design and client strategy at Solcut. Previously shipped product and brand work for studios and venture-backed startups across India, the UK, and the US. Believes the best websites read like the people who built them.",
 };
 
-const KEYS = {
-  work: "solcut:work",
-  testimonials: "solcut:testimonials",
-  logos: "solcut:logos",
-  pricing: "solcut:pricing",
-  about: "solcut:about",
+type SectionKey = "work" | "testimonials" | "logos" | "pricing" | "about";
+
+const DEFAULTS = {
+  work: defaultCaseStudies as WorkItem[],
+  testimonials: defaultTestimonials,
+  logos: defaultLogos,
+  pricing: defaultPricing,
+  about: defaultAbout,
 } as const;
 
-const EVENT = "solcut:content-change";
-
-function read<T>(key: string, fallback: T): T {
-  if (typeof window === "undefined") return fallback;
-  try {
-    const v = localStorage.getItem(key);
-    return v ? (JSON.parse(v) as T) : fallback;
-  } catch {
+async function fetchSection<T>(key: SectionKey, fallback: T): Promise<T> {
+  const { data, error } = await supabase
+    .from("site_content")
+    .select("data")
+    .eq("key", key)
+    .maybeSingle();
+  if (error) {
+    console.error("fetchSection error", key, error);
     return fallback;
   }
-}
-function write<T>(key: string, value: T) {
-  if (typeof window === "undefined") return;
-  localStorage.setItem(key, JSON.stringify(value));
-  window.dispatchEvent(new CustomEvent(EVENT, { detail: { key } }));
+  return (data?.data as T) ?? fallback;
 }
 
-function useStore<T>(key: string, fallback: T): [T, (v: T) => void, () => void] {
-  const [value, setValue] = useState<T>(fallback);
-  useEffect(() => {
-    setValue(read(key, fallback));
-    const onChange = () => setValue(read(key, fallback));
-    window.addEventListener(EVENT, onChange);
-    window.addEventListener("storage", onChange);
-    return () => {
-      window.removeEventListener(EVENT, onChange);
-      window.removeEventListener("storage", onChange);
-    };
+async function saveSection<T>(key: SectionKey, value: T) {
+  const { error } = await supabase
+    .from("site_content")
+    .upsert({ key, data: value as never }, { onConflict: "key" });
+  if (error) throw new Error(error.message);
+}
+
+async function resetSection(key: SectionKey) {
+  await supabase.from("site_content").delete().eq("key", key);
+}
+
+function useSection<T>(key: SectionKey, fallback: T): [T, (v: T) => Promise<void>, () => Promise<void>] {
+  const qc = useQueryClient();
+  const queryKey = ["site_content", key];
+  const { data } = useQuery({
+    queryKey,
+    queryFn: () => fetchSection<T>(key, fallback),
+    initialData: fallback,
+    staleTime: 30_000,
+  });
+
+  const setter = useCallback(
+    async (v: T) => {
+      qc.setQueryData(queryKey, v);
+      try {
+        await saveSection(key, v);
+      } catch (e) {
+        await qc.invalidateQueries({ queryKey });
+        throw e;
+      }
+    },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [key]);
-  const setter = useCallback((v: T) => write(key, v), [key]);
-  const reset = useCallback(() => {
-    if (typeof window !== "undefined") {
-      localStorage.removeItem(key);
-      window.dispatchEvent(new CustomEvent(EVENT, { detail: { key } }));
-    }
-  }, [key]);
-  return [value, setter, reset];
+    [key],
+  );
+
+  const reset = useCallback(
+    async () => {
+      await resetSection(key);
+      qc.setQueryData(queryKey, fallback);
+      await qc.invalidateQueries({ queryKey });
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [key],
+  );
+
+  return [data, setter, reset];
 }
 
-export const useWork = () => useStore<WorkItem[]>(KEYS.work, defaultCaseStudies as WorkItem[]);
-export const useTestimonials = () => useStore<Testimonial[]>(KEYS.testimonials, defaultTestimonials);
-export const useClientLogos = () => useStore<string[]>(KEYS.logos, defaultLogos);
-export const usePricing = () => useStore<PricingData>(KEYS.pricing, defaultPricing);
-export const useAbout = () => useStore<AboutData>(KEYS.about, defaultAbout);
+export const useWork = () => useSection<WorkItem[]>("work", DEFAULTS.work);
+export const useTestimonials = () => useSection<Testimonial[]>("testimonials", DEFAULTS.testimonials);
+export const useClientLogos = () => useSection<string[]>("logos", DEFAULTS.logos);
+export const usePricing = () => useSection<PricingData>("pricing", DEFAULTS.pricing);
+export const useAbout = () => useSection<AboutData>("about", DEFAULTS.about);
 
-// Synchronous getters for loaders (SSR-safe defaults)
+// SSR-safe synchronous fallback for loaders that need a default before fetch
 export function getWorkSync(): WorkItem[] {
-  return read<WorkItem[]>(KEYS.work, defaultCaseStudies as WorkItem[]);
+  return DEFAULTS.work;
 }

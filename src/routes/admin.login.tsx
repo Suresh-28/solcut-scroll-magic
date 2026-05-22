@@ -15,18 +15,28 @@ function AdminLogin() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     if (ready && authed) navigate({ to: "/admin" });
   }, [ready, authed, navigate]);
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    if (login(username, password)) {
-      navigate({ to: "/admin" });
-    } else {
-      setError("Invalid credentials");
+    setSubmitting(true);
+    try {
+      const ok = await login(username, password);
+      if (ok) {
+        navigate({ to: "/admin" });
+      } else {
+        setError("Invalid credentials");
+      }
+    } catch (err) {
+      console.error(err);
+      setError("Something went wrong. Try again.");
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -47,8 +57,12 @@ function AdminLogin() {
             <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="mt-2" />
           </div>
           {error && <p className="text-xs text-destructive">{error}</p>}
-          <button type="submit" className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-ink px-5 py-3 text-sm text-primary-foreground transition hover:opacity-90">
-            Sign in
+          <button
+            type="submit"
+            disabled={submitting}
+            className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-ink px-5 py-3 text-sm text-primary-foreground transition hover:opacity-90 disabled:opacity-60"
+          >
+            {submitting ? "Signing in…" : "Sign in"}
           </button>
         </div>
       </form>

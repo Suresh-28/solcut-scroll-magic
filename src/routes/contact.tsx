@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { motion } from "motion/react";
 import { z } from "zod";
 import { toast } from "sonner";
@@ -15,8 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-const RECIPIENT = "connect.shyamala@gmail.com";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -42,8 +41,9 @@ const schema = z.object({
 function ContactPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrors({});
     const fd = new FormData(e.currentTarget);
@@ -56,19 +56,22 @@ function ContactPage() {
       return;
     }
     setSubmitting(true);
-    const subject = `New project brief — ${parsed.data.name}`;
-    const body =
-      `Name: ${parsed.data.name}\n` +
-      `Email: ${parsed.data.email}\n` +
-      `Company: ${parsed.data.company || "-"}\n` +
-      `Budget: ${parsed.data.budget}\n` +
-      `Timeline: ${parsed.data.timeline}\n\n` +
-      `Brief:\n${parsed.data.brief}`;
-    // Opens the visitor's default mail client pre-filled with the brief.
-    // Without a backend this is the only built-in way to actually deliver.
-    window.location.href = `mailto:${RECIPIENT}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    toast.success("Opening your email client to send the brief…");
-    setTimeout(() => setSubmitting(false), 1200);
+    const { error } = await supabase.from("contact_submissions").insert({
+      name: parsed.data.name,
+      email: parsed.data.email,
+      company: parsed.data.company || null,
+      budget: parsed.data.budget,
+      timeline: parsed.data.timeline,
+      brief: parsed.data.brief,
+    });
+    setSubmitting(false);
+    if (error) {
+      console.error(error);
+      toast.error("Couldn't send brief. Please try again or email us directly.");
+      return;
+    }
+    toast.success("Brief received — we'll reply within 24h.");
+    formRef.current?.reset();
   };
 
   return (
