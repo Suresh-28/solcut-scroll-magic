@@ -99,7 +99,7 @@ function ContactPage() {
 
       <section className="pb-32 md:pb-40">
         <div className="mx-auto max-w-3xl px-6">
-          <form onSubmit={handleSubmit} className="grid gap-6">
+          <form ref={formRef} onSubmit={handleSubmit} className="grid gap-6">
             <Field label="Your name" error={errors.name}>
               <Input name="name" required maxLength={100} className="rounded-none border-0 border-b border-line bg-transparent px-0 text-lg focus-visible:ring-0" />
             </Field>

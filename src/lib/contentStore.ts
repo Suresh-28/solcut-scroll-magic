@@ -100,7 +100,7 @@ async function resetSection(key: SectionKey) {
 function useSection<T>(key: SectionKey, fallback: T): [T, (v: T) => Promise<void>, () => Promise<void>] {
   const qc = useQueryClient();
   const queryKey = ["site_content", key];
-  const { data } = useQuery({
+  const { data } = useQuery<T>({
     queryKey,
     queryFn: () => fetchSection<T>(key, fallback),
     initialData: fallback,
