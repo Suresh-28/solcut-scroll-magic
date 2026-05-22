@@ -1,83 +1,61 @@
-# Plan: Level Up Solcut Into a Conversion-Focused Studio Site
+# Move backend to Lovable Cloud (works with Vercel too)
 
-Goal: turn the current one-pager into a credible, inquiry-generating site. Each major section becomes its own SSR/SEO-friendly route, and we add the trust + clarity pieces a buyer needs before they email you.
+## Short answer to your question
 
-## New routes (file-based, each with own `head()` meta)
+Yes. Lovable Cloud is your **backend** (Postgres database, auth, file storage, email). Where the **frontend** is hosted doesn't matter:
 
-```
-src/routes/
-  index.tsx           (already) — tightened hero + previews of work/testimonials
-  work.tsx            NEW — case study index grid
-  work.$slug.tsx      NEW — individual case study (problem → approach → result + metrics)
-  about.tsx           NEW — story, principles, who's behind Solcut
-  pricing.tsx         NEW — 3 packages + FAQ
-  contact.tsx         NEW — promoted from section to full page with form
-```
+- Publish via Lovable → frontend on `*.lovable.app`, backend on Lovable Cloud
+- Push to GitHub → deploy to Vercel → frontend on Vercel, backend still on Lovable Cloud
 
-Nav (Work · About · Pricing · Contact) updated in `Nav` component, replacing hash links with `<Link to="...">`.
+In both cases the same database holds your work items, testimonials, pricing, about content, and contact form submissions. Edits made in the admin panel persist for every visitor on every device — the localStorage reversion problem goes away.
 
-## 1. Case studies (`/work` + `/work/$slug`)
+For the Vercel path you only need to copy two public env vars into the Vercel project (`VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`). Lovable will set these locally automatically.
 
-- Index: grid of 3–4 projects with cover image, client, industry, year, one-line outcome.
-- Detail page structure: Hero (client, role, year) → Challenge → Approach → Solution (screens) → Results (3 metric tiles e.g. "+42% inquiries", "1.2s LCP", "2 weeks") → Testimonial quote → Next project link.
-- Content stored as typed array in `src/content/case-studies.ts` so you can edit copy without touching components.
-- Sphere stays as an ambient element on index/about; case study pages get a calmer hero (image-led).
+## What this plan does
 
-## 2. Testimonials
+1. Enable Lovable Cloud.
+2. Move the four content stores (work, testimonials, pricing, about) from `localStorage` to a real database.
+3. Replace the hardcoded `admin / solcut` login with proper server-side auth (still using those credentials — we seed an admin user).
+4. Make the contact form actually email the brief to `connect.shyamala@gmail.com` (no more `mailto:` popup).
+5. Document the Vercel deployment steps so you can flip to Vercel anytime.
 
-- Dedicated `<Testimonials />` component reused on home + about + pricing.
-- 3–5 quotes with name, role, company, optional avatar.
-- Logo strip ("Trusted by") above or below — grayscale, hover to color.
+## Database tables
 
-## 3. About (`/about`)
+- `site_content` — single-row-per-section JSON store (`work`, `testimonials`, `pricing`, `about`, `logos`). Simple, mirrors the current shape, fast to migrate.
+- RLS: public can `SELECT`, only authenticated admins can `UPDATE`.
+- `contact_submissions` — log every brief sent (name, email, company, budget, timeline, brief, created_at).
 
-- Intro paragraph (philosophy, why Solcut exists).
-- "Principles" — 3–4 short cards (e.g. Ship in 2 weeks, Performance is design, No template tells).
-- Founder/team block with photo, bio, social links.
-- Process recap with a link to `/work`.
+## Admin auth
 
-## 4. Pricing (`/pricing`)
+- One real user seeded: `admin@solcut.local` / `solcut` (login form still shows "username: admin" — we map it to the email under the hood).
+- `/admin/*` routes guarded server-side via `_authenticated` layout; unauthorized requests redirect to `/admin/login`.
+- Logout clears the session.
 
-- 3 tiers: **Landing** · **Brand site** · **Custom build** — each with price (or "from $X"), timeline, what's included, ideal-for line, CTA "Book a call".
-- Comparison-friendly card layout, middle tier highlighted.
-- FAQ accordion (6 questions: payment, revisions, ownership, CMS handover, ongoing support, refund).
+## Contact form
 
-## 5. Lead-capture upgrades
+- Server function validates the brief with Zod, inserts into `contact_submissions`, then sends an email to `connect.shyamala@gmail.com` via Lovable Email (Resend under the hood, no API key for you to manage).
+- Replies to the email go straight to the visitor's address.
 
-- Replace `mailto:` on Contact with a real form (name, email, company, budget select, project brief textarea, timeline).
-- Submit via a `createServerFn` that stores the lead in Lovable Cloud (`leads` table) and sends an email notification using Lovable Email.
-- Keep email link as fallback. Show inline success state.
-- Add a sticky bottom-right "Book a call" pill on scroll past hero.
+## Deploying to Vercel later
 
-## 6. SEO + sharing baseline
+After Cloud is enabled and code is on GitHub:
 
-- Per-route `head()` with unique title, description, og:title, og:description.
-- Add `og:image` per case study using its cover image.
-- Add `sitemap.xml` + `robots.txt` route handlers.
-- JSON-LD `Organization` on home, `Service` on pricing, `CreativeWork` on case studies.
+1. Vercel → New Project → import the GitHub repo
+2. Framework preset: TanStack Start (or Vite)
+3. Add env vars: `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY` (values shown in Lovable Cloud → Settings)
+4. Deploy
 
-## 7. Small polish
+Lovable Cloud keeps serving the backend. Edits made in either Lovable's preview admin or the Vercel-deployed admin write to the same database.
 
-- 404 page (`__root.tsx` notFoundComponent) styled to match brand.
-- Loading/skeleton states for the form.
-- `prefers-reduced-motion` guard on sphere animations.
-- Footer: add Work / About / Pricing / Contact link columns.
+## Technical details
 
-## Technical notes
-
-- Stack stays TanStack Start + Motion + Tailwind tokens from `src/styles.css`.
-- Lead form needs **Lovable Cloud** enabled (table `leads` with RLS insert-only by anon, plus a `requireSupabaseAuth`-protected admin read fn). I'll prompt for activation when we get there.
-- Lovable Email used for the inquiry notification to `connect.shyamala@gmail.com`.
-- Content arrays kept in `src/content/*.ts` so future edits don't require component changes.
-
-## Suggested build order
-
-1. Extract shared components (`Nav`, `Footer`, `Sphere`) into `src/components/`.
-2. Create `/about` and `/pricing` (static, no backend).
-3. Create `/work` index + `/work/$slug` with sample case study.
-4. Add Testimonials + logo strip on home & about.
-5. Enable Lovable Cloud → build `/contact` form + lead storage + email.
-6. SEO: per-route meta, sitemap, robots, JSON-LD.
-7. Polish: 404, sticky CTA, reduced-motion.
-
-Want me to start with steps 1–4 (pure frontend, no backend yet), or go end-to-end including the Cloud-powered contact form?
+- New files:
+  - `src/lib/content.functions.ts` — `getSiteContent`, `updateSiteContent` server fns
+  - `src/lib/contact.functions.ts` — `submitContactBrief` (insert + send email)
+  - Supabase migrations for `site_content`, `contact_submissions`, RLS, and seed admin user
+- Refactor:
+  - `src/lib/contentStore.ts` becomes thin React Query wrappers around `getSiteContent`
+  - `src/lib/adminAuth.ts` becomes a wrapper around `supabase.auth.signInWithPassword`
+  - All `/admin/*` editors call `updateSiteContent` instead of writing to localStorage
+  - `src/routes/contact.tsx` calls `submitContactBrief` instead of `window.location.href = mailto:`
+- Existing default content in `src/content/*` is used to seed the first row of `site_content` so nothing visually changes on first load.
