@@ -131,7 +131,7 @@ function useSection<T>(key: SectionKey, fallback: T): [T, (v: T) => Promise<void
     [key],
   );
 
-  return [data, setter, reset];
+  return [data ?? fallback, setter, reset];
 }
 
 export const useWork = () => useSection<WorkItem[]>("work", DEFAULTS.work);
