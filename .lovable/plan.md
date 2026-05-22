@@ -1,61 +1,39 @@
-# Move backend to Lovable Cloud (works with Vercel too)
+# Migrate admin CRUD + contact form to Lovable Cloud
 
-## Short answer to your question
+Cloud is enabled and the database is set up:
+- `site_content` — JSON store for editable sections (work, testimonials, logos, pricing, about). Public can read; only admin can write.
+- `contact_submissions` — every brief from the contact form is recorded here. Anyone can submit; only admin can read.
+- `is_admin()` helper checks the signed-in user is the dedicated admin account.
 
-Yes. Lovable Cloud is your **backend** (Postgres database, auth, file storage, email). Where the **frontend** is hosted doesn't matter:
+## Code changes
 
-- Publish via Lovable → frontend on `*.lovable.app`, backend on Lovable Cloud
-- Push to GitHub → deploy to Vercel → frontend on Vercel, backend still on Lovable Cloud
+1. **Wire auth attacher** — `src/start.ts` registers `attachSupabaseAuth` so server functions receive the admin's session token.
 
-In both cases the same database holds your work items, testimonials, pricing, about content, and contact form submissions. Edits made in the admin panel persist for every visitor on every device — the localStorage reversion problem goes away.
+2. **Replace admin login** — `src/lib/adminAuth.ts` now signs in via Lovable Cloud auth instead of localStorage. The username stays `admin`, password stays `solcut`. A one-time server function (`ensureAdmin`) creates the admin account on first login attempt — you don't have to do anything manually.
 
-For the Vercel path you only need to copy two public env vars into the Vercel project (`VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`). Lovable will set these locally automatically.
+3. **Move content store to Cloud** — `src/lib/contentStore.ts` is rewritten on top of React Query + Supabase. Same `useWork() / useTestimonials() / usePricing() / useAbout()` API the existing pages already use, so admin editors and public pages keep working without changes. Edits write to the `site_content` table; every visitor sees the same content on every device.
 
-## What this plan does
+4. **Contact form to Cloud** — `src/routes/contact.tsx` inserts the brief into `contact_submissions` instead of opening a mail client. Toast confirms submission. (Email delivery to `connect.shyamala@gmail.com` can be added in a follow-up when you set up an email domain — for now briefs are stored and readable from the admin once we add a Briefs page.)
 
-1. Enable Lovable Cloud.
-2. Move the four content stores (work, testimonials, pricing, about) from `localStorage` to a real database.
-3. Replace the hardcoded `admin / solcut` login with proper server-side auth (still using those credentials — we seed an admin user).
-4. Make the contact form actually email the brief to `connect.shyamala@gmail.com` (no more `mailto:` popup).
-5. Document the Vercel deployment steps so you can flip to Vercel anytime.
+5. **Admin login UI** — `src/routes/admin.login.tsx` becomes async (awaits the network call), shows loading state, surfaces server errors.
 
-## Database tables
+## Files touched
 
-- `site_content` — single-row-per-section JSON store (`work`, `testimonials`, `pricing`, `about`, `logos`). Simple, mirrors the current shape, fast to migrate.
-- RLS: public can `SELECT`, only authenticated admins can `UPDATE`.
-- `contact_submissions` — log every brief sent (name, email, company, budget, timeline, brief, created_at).
+- edit `src/start.ts`
+- new `src/lib/admin.functions.ts`
+- rewrite `src/lib/adminAuth.ts`
+- rewrite `src/lib/contentStore.ts`
+- edit `src/routes/admin.login.tsx`
+- edit `src/routes/contact.tsx`
+- minor: `src/components/AdminLayout.tsx` (logout becomes async)
 
-## Admin auth
+## After this lands
 
-- One real user seeded: `admin@solcut.local` / `solcut` (login form still shows "username: admin" — we map it to the email under the hood).
-- `/admin/*` routes guarded server-side via `_authenticated` layout; unauthorized requests redirect to `/admin/login`.
-- Logout clears the session.
+- Open `/admin/login`, sign in with `admin / solcut`.
+- Edit any section, save — refresh in any browser, on any device, in incognito: edits persist.
+- Submit the contact form — the brief is stored in Cloud (visible in Cloud → Database → contact_submissions).
 
-## Contact form
+## Notes
 
-- Server function validates the brief with Zod, inserts into `contact_submissions`, then sends an email to `connect.shyamala@gmail.com` via Lovable Email (Resend under the hood, no API key for you to manage).
-- Replies to the email go straight to the visitor's address.
-
-## Deploying to Vercel later
-
-After Cloud is enabled and code is on GitHub:
-
-1. Vercel → New Project → import the GitHub repo
-2. Framework preset: TanStack Start (or Vite)
-3. Add env vars: `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY` (values shown in Lovable Cloud → Settings)
-4. Deploy
-
-Lovable Cloud keeps serving the backend. Edits made in either Lovable's preview admin or the Vercel-deployed admin write to the same database.
-
-## Technical details
-
-- New files:
-  - `src/lib/content.functions.ts` — `getSiteContent`, `updateSiteContent` server fns
-  - `src/lib/contact.functions.ts` — `submitContactBrief` (insert + send email)
-  - Supabase migrations for `site_content`, `contact_submissions`, RLS, and seed admin user
-- Refactor:
-  - `src/lib/contentStore.ts` becomes thin React Query wrappers around `getSiteContent`
-  - `src/lib/adminAuth.ts` becomes a wrapper around `supabase.auth.signInWithPassword`
-  - All `/admin/*` editors call `updateSiteContent` instead of writing to localStorage
-  - `src/routes/contact.tsx` calls `submitContactBrief` instead of `window.location.href = mailto:`
-- Existing default content in `src/content/*` is used to seed the first row of `site_content` so nothing visually changes on first load.
+- One security warning remains (signed-in users can call `is_admin()`) — this is required for RLS to work and is safe; the function only reads the caller's own JWT.
+- An admin "Briefs" page and real email delivery to your inbox can be added next; let me know after this works.
