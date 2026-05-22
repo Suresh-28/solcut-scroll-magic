@@ -28,8 +28,8 @@ export function AdminLayout({ children, title }: { children: React.ReactNode; ti
     return <div className="flex min-h-screen items-center justify-center bg-background text-sm text-ink-mute">Checking session…</div>;
   }
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     navigate({ to: "/admin/login" });
   };
 

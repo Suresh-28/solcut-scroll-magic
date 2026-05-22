@@ -1,45 +1,49 @@
 import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { ensureAdmin } from "@/lib/admin.functions";
 
-const KEY = "solcut:admin-auth";
-const EVT = "solcut:admin-auth-change";
+const ADMIN_EMAIL = "admin@solcut.app";
 
-// NOTE: Client-side only. Anyone reading the bundle can see these.
-// For real protection, move auth to a server with Lovable Cloud.
-const ADMIN_USER = "admin";
-const ADMIN_PASS = "solcut";
-
-export function login(username: string, password: string): boolean {
-  if (username === ADMIN_USER && password === ADMIN_PASS) {
-    sessionStorage.setItem(KEY, "1");
-    window.dispatchEvent(new Event(EVT));
-    return true;
+export async function login(username: string, password: string): Promise<boolean> {
+  if (username.trim().toLowerCase() !== "admin") return false;
+  try {
+    await ensureAdmin();
+  } catch (e) {
+    console.error("ensureAdmin failed", e);
   }
-  return false;
+  const { error } = await supabase.auth.signInWithPassword({
+    email: ADMIN_EMAIL,
+    password,
+  });
+  return !error;
 }
 
-export function logout() {
-  sessionStorage.removeItem(KEY);
-  window.dispatchEvent(new Event(EVT));
-}
-
-export function isLoggedIn(): boolean {
-  if (typeof window === "undefined") return false;
-  return sessionStorage.getItem(KEY) === "1";
+export async function logout() {
+  await supabase.auth.signOut();
 }
 
 export function useAdminAuth() {
   const [authed, setAuthed] = useState(false);
   const [ready, setReady] = useState(false);
+
   useEffect(() => {
-    setAuthed(isLoggedIn());
-    setReady(true);
-    const onChange = () => setAuthed(isLoggedIn());
-    window.addEventListener(EVT, onChange);
-    window.addEventListener("storage", onChange);
+    let mounted = true;
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        if (!mounted) return;
+        setAuthed(!!session && session.user.email === ADMIN_EMAIL);
+      },
+    );
+    supabase.auth.getSession().then(({ data }) => {
+      if (!mounted) return;
+      setAuthed(!!data.session && data.session.user.email === ADMIN_EMAIL);
+      setReady(true);
+    });
     return () => {
-      window.removeEventListener(EVT, onChange);
-      window.removeEventListener("storage", onChange);
+      mounted = false;
+      subscription.unsubscribe();
     };
   }, []);
+
   return { authed, ready };
 }
