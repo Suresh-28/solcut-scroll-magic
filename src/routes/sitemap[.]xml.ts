@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 import { caseStudies } from "@/content/case-studies";
 
-const BASE_URL = "https://solcut-scroll-magic.lovable.app";
+const BASE_URL = "https://solcut.in";
 
 export const Route = createFileRoute("/sitemap.xml")({
   server: {
