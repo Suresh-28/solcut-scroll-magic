@@ -30,9 +30,13 @@ function AdminPricing() {
   const addFaq = () => setFaqs([...faqs, { q: "", a: "" }]);
   const removeFaq = (i: number) => setFaqs(faqs.filter((_, idx) => idx !== i));
 
-  const save = () => {
-    setData({ tiers, faqs });
-    toast.success("Pricing saved");
+  const save = async () => {
+    try {
+      await setData({ tiers, faqs });
+      toast.success("Pricing saved");
+    } catch (e) {
+      toast.error("Save failed. Check you're signed in as admin.");
+    }
   };
 
   return (

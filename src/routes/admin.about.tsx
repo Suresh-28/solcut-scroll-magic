@@ -27,7 +27,14 @@ function AdminAbout() {
   const removePrinciple = (i: number) =>
     setDraft({ ...draft, principles: draft.principles.filter((_, idx) => idx !== i) });
 
-  const save = () => { setData(draft); toast.success("About saved"); };
+  const save = async () => {
+    try {
+      await setData(draft);
+      toast.success("About saved");
+    } catch (e) {
+      toast.error("Save failed. Check you're signed in as admin.");
+    }
+  };
 
   return (
     <AdminLayout title="About">
