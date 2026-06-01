@@ -187,7 +187,8 @@ function ParallaxQuote() {
 }
 
 function WorkPreview() {
-  const featured = caseStudies.slice(0, 3);
+  const [work] = useWork();
+  const featured = work.slice(0, 3);
   return (
     <section id="work" data-section="work" className="relative overflow-hidden pt-56 pb-32 md:py-48">
       <motion.div
