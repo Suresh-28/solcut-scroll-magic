@@ -5,7 +5,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { Testimonials } from "@/components/Testimonials";
-import { caseStudies } from "@/content/case-studies";
+import { useWork } from "@/lib/contentStore";
 import sphere from "@/assets/sphere.png";
 
 export const Route = createFileRoute("/")({
@@ -187,7 +187,8 @@ function ParallaxQuote() {
 }
 
 function WorkPreview() {
-  const featured = caseStudies.slice(0, 3);
+  const [work] = useWork();
+  const featured = work.slice(0, 3);
   return (
     <section id="work" data-section="work" className="relative overflow-hidden pt-56 pb-32 md:py-48">
       <motion.div
