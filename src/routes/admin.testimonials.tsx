@@ -29,10 +29,14 @@ function AdminTestimonials() {
   const add = () => setDraft([...draft, { quote: "", author: "", role: "" }]);
   const remove = (i: number) => setDraft(draft.filter((_, idx) => idx !== i));
 
-  const save = () => {
-    setItems(draft);
-    setLogos(logoDraft.split("\n").map((l) => l.trim()).filter(Boolean));
-    toast.success("Testimonials saved");
+  const save = async () => {
+    try {
+      await setItems(draft);
+      await setLogos(logoDraft.split("\n").map((l) => l.trim()).filter(Boolean));
+      toast.success("Testimonials saved");
+    } catch (e) {
+      toast.error("Save failed. Check you're signed in as admin.");
+    }
   };
 
   return (

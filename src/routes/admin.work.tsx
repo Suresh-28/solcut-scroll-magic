@@ -45,10 +45,14 @@ function AdminWork() {
   };
   const remove = (i: number) => setDraft(draft.filter((_, idx) => idx !== i));
 
-  const save = () => {
-    const cleaned = draft.map((w) => ({ ...w, slug: w.slug ? w.slug : slugify(w.name) }));
-    setItems(cleaned);
-    toast.success("Work saved");
+  const save = async () => {
+    try {
+      const cleaned = draft.map((w) => ({ ...w, slug: w.slug ? w.slug : slugify(w.name) }));
+      await setItems(cleaned);
+      toast.success("Work saved");
+    } catch (e) {
+      toast.error("Save failed. Check you're signed in as admin.");
+    }
   };
 
   return (
